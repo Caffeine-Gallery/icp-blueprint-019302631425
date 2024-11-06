@@ -1,5 +1,5 @@
 import Int "mo:base/Int";
-import Nat "mo:base/Nat";
+import Random "mo:base/Random";
 import Stack "mo:base/Stack";
 import Time "mo:base/Time";
 
@@ -32,6 +32,8 @@ Key Properties:
 - Nodes per Subnet: 13-28
 - Consensus: Threshold Relay
 - Chain-Key Cryptography
+- Scalability: Horizontal scaling through subnet creation
+- Interoperability: Cross-subnet transactions
             </div>
         </div>
         
@@ -44,6 +46,9 @@ Features:
 - HTTP Outcalls
 - Inter-Canister Calls
 - Autonomous Updates
+- Deterministic Execution
+- Cycle-based Resource Accounting
+- Candid Interface Description Language
             </div>
         </div>
     </div>
@@ -65,12 +70,15 @@ Token Mechanisms:
    - ICP → Cycles for computation
    - Dynamic conversion rate
    - SDR-pegged pricing model
+   - Deflationary mechanism: ICP burned on conversion
 
 2. Governance Staking
    - Neuron creation
    - Voting power calculation
    - Reward distribution
    - Dissolve delay mechanics
+   - Age bonus for long-term staking
+   - Followee system for liquid democracy
     </div>
 
     <h3>2.2 Neuron Mathematics</h3>
@@ -84,6 +92,10 @@ Neuron Formulas:
 2. Rewards = BaseReward × Stake × DissolveMultiplier × VotingMultiplier
    where DissolveMultiplier = 1 + (DissolveDelay/MaxDelay)
    and VotingMultiplier = VotingActivity/TotalProposals
+
+3. Neuron Spawning:
+   Maturity required = 6 months of accumulated rewards
+   New ICP minted = Maturity × CurrentConversionRate
     </div>
 
     <h2>3. Tax Implications & Reporting</h2>
@@ -98,8 +110,12 @@ Neuron Formulas:
             <li>Trading ICP on Exchanges</li>
             <li>Receiving Staking Rewards</li>
             <li>Neuron Maturity Redemption</li>
+            <li>Airdrop Receipts</li>
+            <li>Payment for Goods or Services in ICP</li>
         </ul>
     </div>
+
+    <div id=\"tax-implications-flow\"></div>
 
     <div class=\"grid\">
         <div class=\"card\">
@@ -117,6 +133,15 @@ Sale: 150 ICP @ $60
 
 FIFO Cost Basis:
 (100 × $50) + (50 × $40) = $7,000
+Capital Gain: (150 × $60) - $7,000 = $2,000
+
+LIFO Cost Basis:
+(150 × $40) = $6,000
+Capital Gain: (150 × $60) - $6,000 = $3,000
+
+Importance:
+- Consistent method use
+- Impact on short-term vs long-term capital gains
             </div>
         </div>
         
@@ -132,6 +157,14 @@ Tax Treatment:
 2. Cost Basis Tracking
    - New cost basis = FMV at distribution
    - Holding period starts at distribution
+
+3. Neuron Maturity
+   - Taxed when redeemed, not when accrued
+   - May qualify for long-term capital gains if held >1 year
+
+4. Dissolve Delay Considerations
+   - No tax implications for increasing/decreasing delay
+   - May affect reward rate and thus future taxable income
             </div>
         </div>
     </div>
@@ -145,28 +178,53 @@ Tax Treatment:
                 <th>Transaction Type</th>
                 <th>Required Information</th>
                 <th>Documentation</th>
+                <th>Tax Implications</th>
             </tr>
             <tr>
                 <td>Purchases</td>
                 <td>Date, Amount, Price, Fees</td>
                 <td>Exchange statements, Bank transfers</td>
+                <td>Establishes cost basis</td>
             </tr>
             <tr>
                 <td>Sales</td>
                 <td>Date, Amount, Price, Fees</td>
                 <td>Exchange statements, Blockchain records</td>
+                <td>Capital gains/losses</td>
             </tr>
             <tr>
                 <td>Staking Rewards</td>
                 <td>Distribution dates, Amounts, FMV</td>
                 <td>Network records, Price data</td>
+                <td>Ordinary income</td>
             </tr>
             <tr>
                 <td>Cycle Conversions</td>
                 <td>Conversion rate, Amount, Date</td>
                 <td>Canister records, SDR rates</td>
+                <td>Potential taxable event</td>
+            </tr>
+            <tr>
+                <td>Neuron Operations</td>
+                <td>Creation, Spawning, Dissolving</td>
+                <td>NNS records, Transaction logs</td>
+                <td>Varies based on action</td>
             </tr>
         </table>
+    </div>
+
+    <h3>3.3 Tax Reporting Considerations</h3>
+
+    <div class=\"info-box\">
+        <h4>Key Points for ICP Tax Reporting:</h4>
+        <ul>
+            <li>Use Form 8949 for reporting ICP sales and exchanges</li>
+            <li>Summarize gains/losses on Schedule D</li>
+            <li>Report staking rewards as 'Other Income' on Form 1040</li>
+            <li>Consider state tax implications, which may vary</li>
+            <li>For large transactions, consider quarterly estimated tax payments</li>
+            <li>Consult with a tax professional familiar with cryptocurrency</li>
+        </ul>
     </div>
 
     <h2>4. Technical Implementation</h2>
@@ -182,21 +240,26 @@ Protocol Stack:
    - HTTP/HTTPS Gateway
    - Asset Certification
    - Query/Update Segregation
+   - Canister Interfaces (Candid)
 
 2. Consensus Layer
    - Block Production
    - Notarization
    - State Certification
+   - Threshold Signatures
+   - Random Beacon
 
 3. Network Layer
    - P2P Communication
    - Flow Control
    - Peer Discovery
+   - Subnet Management
 
 4. Transport Layer
    - UDP/TCP
    - Connection Management
    - Reliability
+   - Encryption (TLS)
     </div>
 
     <h3>4.2 Smart Contract Development</h3>
@@ -209,29 +272,36 @@ Canister Development:
    - Rust
    - JavaScript/TypeScript
    - C/C++
+   - Any language compiling to Wasm
 
 2. Development Stack
    - dfx CLI
-   - Candid Interface
+   - Candid Interface Description Language
    - Vessel Package Manager
    - Unit Testing Framework
+   - Canister SDK
 
 3. Deployment
    - Network Deployment
    - Upgrade Preservation
    - State Management
+   - Cycles Management
+   - Inter-Canister Communication
     </div>
 
     <div class=\"card\">
         <h4>Example Motoko Code</h4>
         <div class=\"technical-box\">
-actor {
-    // State
-    private stable var count : Nat = 0;
+import Debug \"mo:base/Debug\";
+import Nat \"mo:base/Nat\";
+
+actor Counter {
+    stable var count : Nat = 0;
     
     // Update call
     public func increment() : async Nat {
         count += 1;
+        Debug.print(\"Count is \" # Nat.toText(count));
         return count;
     };
     
@@ -240,10 +310,11 @@ actor {
         return count;
     };
     
-    // Upgrade hook
-    system func preupgrade() {
-        // Handle upgrade
-    };
+    // Candid interface (auto-generated)
+    // service : {
+    //   get: () -> (nat) query;
+    //   increment: () -> (nat);
+    // }
 };
         </div>
     </div>

@@ -23,6 +23,26 @@ document.addEventListener('DOMContentLoaded', async () => {
             D --> I[Governance]
             D --> J[Economics]
             
+            E --> K[Consensus]
+            E --> L[Execution]
+            E --> M[Networking]
+            
+            F --> N[Smart Contracts]
+            F --> O[Web Services]
+            F --> P[DApps]
+            
+            G --> Q[Threshold Signatures]
+            G --> R[Non-Interactive DKG]
+            
+            H --> S[Deterministic Execution]
+            H --> T[Memory Management]
+            
+            I --> U[Proposals]
+            I --> V[Voting]
+            
+            J --> W[ICP Token]
+            J --> X[Cycles]
+            
             style A fill:#29abe2
             style B fill:#522785
             style C fill:#29abe2
@@ -42,6 +62,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             C --> H[Staking Rewards]
             C --> I[Voting Power]
             
+            D --> J[Canister Execution]
+            E --> K[State Storage]
+            F --> L[Runtime Memory]
+            
+            G --> M[Network Upgrades]
+            G --> N[Economic Parameters]
+            
+            H --> O[Neuron Maturity]
+            H --> P[Dissolve Delay Bonus]
+            
+            I --> Q[Proposal Influence]
+            I --> R[Followees]
+            
             style A fill:#29abe2
             style B fill:#522785
             style C fill:#29abe2
@@ -53,18 +86,58 @@ document.addEventListener('DOMContentLoaded', async () => {
             participant Gateway
             participant Canister
             participant Consensus
+            participant StateManager
             
             User->>Gateway: HTTP Request
             Gateway->>Canister: Query/Update
-            Canister->>Consensus: State Update
-            Consensus->>Canister: Confirmation
+            Canister->>StateManager: Read State
+            StateManager->>Canister: Return State
+            Canister->>Consensus: Propose Update
+            Consensus->>Consensus: Reach Agreement
+            Consensus->>StateManager: Apply Update
+            StateManager->>Canister: Confirm Update
             Canister->>Gateway: Response
             Gateway->>User: HTTP Response
+        `;
+
+        const taxImplicationsFlow = `
+        graph TD
+            A[ICP Token Activities] --> B[Taxable Events]
+            A --> C[Record Keeping]
+            
+            B --> D[Token Sale]
+            B --> E[ICP to Cycles Conversion]
+            B --> F[Exchange Trading]
+            B --> G[Staking Rewards]
+            B --> H[Neuron Maturity Redemption]
+            
+            C --> I[Transaction Logs]
+            C --> J[Cost Basis Tracking]
+            C --> K[Fair Market Value Records]
+            
+            D --> L[Capital Gains/Losses]
+            E --> L
+            F --> L
+            
+            G --> M[Ordinary Income]
+            H --> M
+            
+            I --> N[Tax Reporting]
+            J --> N
+            K --> N
+            
+            L --> O[Schedule D]
+            M --> P[Form 1040]
+            
+            style A fill:#29abe2
+            style B fill:#522785
+            style C fill:#29abe2
         `;
 
         document.getElementById('architecture-diagram').innerHTML = `<div class="mermaid">${architectureDiagram}</div>`;
         document.getElementById('tokenomics-flow').innerHTML = `<div class="mermaid">${tokenomicsFlow}</div>`;
         document.getElementById('implementation-flow').innerHTML = `<div class="mermaid">${implementationFlow}</div>`;
+        document.getElementById('tax-implications-flow').innerHTML = `<div class="mermaid">${taxImplicationsFlow}</div>`;
 
         mermaid.init(undefined, document.querySelectorAll(".mermaid"));
     } catch (error) {
