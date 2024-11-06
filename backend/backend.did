@@ -1,0 +1,3 @@
+service : {
+  getSpecification: () -> (text) query;
+}
