@@ -1,245 +1,252 @@
-import Hash "mo:base/Hash";
-import HashMap "mo:base/HashMap";
-import Heap "mo:base/Heap";
 import Int "mo:base/Int";
-import Option "mo:base/Option";
-import Principal "mo:base/Principal";
-import Result "mo:base/Result";
+import Nat "mo:base/Nat";
+import Stack "mo:base/Stack";
+import Time "mo:base/Time";
 
 import Text "mo:base/Text";
 
 actor {
   let specification = "
-    <h1>Internet Computer Protocol: Technical Specification</h1>
-
-    <h2>1. Consensus Protocol Implementation</h2>
-    
-    <h3>1.1 Threshold Relay Chain-Key Cryptography</h3>
-    
-    <div class=\"technical-box\">
-Protocol Parameters:
-- n: Total number of nodes
-- f: Byzantine fault tolerance (f = ⌊(n-1)/3⌋)
-- t: Threshold signature parameter (t = ⌊2n/3⌋ + 1)
-- λ: Security parameter (default: 128 bits)
-- Δ: Network delay bound
-- T_round: Round duration
-</div>
-
-    <h4>1.1.1 Distributed Key Generation (DKG) Protocol</h4>
-    
-    <div class=\"algorithm-box\">
-DKG Protocol Steps:
-1. Initialization Phase:
-   - Each node i generates random polynomial fi(x) of degree t
-   - Compute shares sij = fi(j) for each node j
-   - Broadcast commitments Cik = g^(aik) for coefficients aik
-
-2. Share Distribution:
-   - Send encrypted shares E(sij) to each node j
-   - Verify received shares against commitments
-   - Broadcast complaints for invalid shares
-
-3. Share Reconstruction:
-   - Resolve complaints through distributed reconstruction
-   - Compute final public key PK = ∏ PKi
-   - Each node holds share ski of master secret key sk</div>
-
-    <div class=\"proof\">
-Theorem 1 (DKG Security):
-The DKG protocol achieves the following properties:
-1. Correctness: All honest nodes output consistent shares
-2. Secrecy: No coalition of up to t-1 nodes can reconstruct the secret
-3. Robustness: Protocol completes despite up to f malicious nodes
-
-Proof Sketch:
-- Correctness follows from polynomial interpolation properties
-- Secrecy relies on discrete logarithm assumption
-- Robustness achieved through complaint mechanism and t > f
-</div>
-
-    <h3>1.2 Block Production Algorithm</h3>
-    
-    <div id=\"block-production\"></div>
-
-    <div class=\"formula\">
-Block Validation Requirements:
-
-1. Syntactic Validation:
-   - Block Header H = (h_prev, h_root, h_sig, timestamp)
-   - Transaction Merkle root h_root matches transactions
-   - Valid threshold signature h_sig
-
-2. Semantic Validation:
-   - All transactions tx_i are valid
-   - State transition S_t → S_t+1 is valid
-   - Resource limits respected: 
-     Σ computation_i ≤ MAX_COMPUTATION
-     Σ storage_i ≤ MAX_STORAGE</div>
-
-    <h3>1.3 Network Layer Protocol</h3>
-    
-    <div class=\"technical-box\">
-P2P Protocol Specification:
-
-Interface Node {
-    // Gossip Protocol
-    fn broadcast_message(msg: Message) -> Result<()>;
-    fn receive_message() -> Option<Message>;
-    
-    // Flow Control
-    fn get_peer_score(peer_id: PeerId) -> f64;
-    fn update_peer_score(peer_id: PeerId, score: f64);
-    
-    // Connection Management
-    fn connect_peer(addr: MultiAddr) -> Result<PeerId>;
-    fn disconnect_peer(peer_id: PeerId);
-    
-    // State Sync
-    fn request_state(height: BlockHeight) -> Result<State>;
-    fn provide_state(height: BlockHeight, state: State);
-}</div>
-
-    <h2>2. Canister Runtime Environment</h2>
-    
-    <h3>2.1 WebAssembly Execution Model</h3>
-    
-    <div class=\"grid\">
-        <div class=\"technical-box\">
-Memory Management:
-
-struct MemoryLayout {
-    // Heap Memory (volatile)
-    heap_start: u32,
-    heap_size: u32,
-    
-    // Stable Memory (persistent)
-    stable_start: u32,
-    stable_size: u32,
-    
-    // Global State
-    globals: Vec<Global>,
-    
-    // Memory Pages
-    pages: Vec<MemoryPage>,
-}</div>
-        
-        <div class=\"technical-box\">
-Instruction Cost Model:
-
-const COSTS: HashMap<Instruction, Cycles> = {
-    Load: 3,
-    Store: 5,
-    Call: 10,
-    Branch: 2,
-    ALU: 1,
-    Memory: {
-        Grow: 1000,
-        Size: 1,
-        Copy: 10,
-    }
-}</div>
+    <div class=\"hero\">
+        <h1>Internet Computer: The Complete Guide</h1>
+        <p>Understanding ICP, Neurons, Tokenomics, and Tax Implications</p>
     </div>
 
-    <div id=\"memory-model\"></div>
-
-    <h3>2.2 Inter-Canister Messaging</h3>
+    <h2>1. What is the Internet Computer?</h2>
     
-    <div class=\"technical-box\">
-Message Format:
-
-struct Message {
-    // Header
-    source: Principal,
-    target: Principal,
-    method: String,
-    nonce: u64,
-    
-    // Payload
-    args: Vec<u8>,
-    cycles: u64,
-    
-    // Validation
-    signature: ThresholdSignature,
-    timestamp: u64,
-}</div>
-
-    <h2>3. Economic Protocol</h2>
-    
-    <h3>3.1 Neuron Staking Mechanics</h3>
-    
-    <div class=\"formula\">
-Neuron State Transitions:
-
-1. Creation:
-   N_new = (principal, stake, state=Locked)
-
-2. Dissolve Delay Increase:
-   dd_new = min(dd_current + Δt, MAX_DISSOLVE_DELAY)
-
-3. Voting Power:
-   VP = stake * (1 + dd/MAX_DISSOLVE_DELAY) * age_bonus
-   where age_bonus = min(1 + age/4_years, 1.25)
-
-4. Reward Distribution:
-   R_t = base_rate * stake * (1 + dd_multiplier) * participation_rate</div>
-
-    <h3>3.2 Cycles Economy</h3>
-    
-    <div class=\"grid\">
-        <div class=\"technical-box\">
-Cycle Price Calculation:
-
-fn compute_cycle_price(
-    sdr_rate: f64,
-    network_load: f64,
-    baseline_price: f64
-) -> f64 {
-    let load_factor = 1.0 + (network_load - 0.5).max(0.0);
-    let base_price = sdr_rate * baseline_price;
-    base_price * load_factor
-}</div>
-        
-        <div class=\"technical-box\">
-Resource Pricing Model:
-
-struct ResourcePrices {
-    compute: Cycles,   // per instruction
-    memory: Cycles,    // per page
-    storage: Cycles,   // per byte-second
-    bandwidth: Cycles, // per byte
-}</div>
+    <div class=\"info-box\">
+        The Internet Computer is a blockchain network that extends the public internet with computational capabilities, enabling smart contracts (called canisters) to serve web content and run applications at web speed.
     </div>
 
-    <h2>4. Network Architecture</h2>
+    <div id=\"architecture-diagram\"></div>
+
+    <h3>1.1 Core Components</h3>
     
-    <div id=\"network-topology\"></div>
+    <div class=\"grid\">
+        <div class=\"card\">
+            <h4>Subnet Blockchains</h4>
+            <div class=\"technical-box\">
+Key Properties:
+- Block Time: ~1 second
+- Finality: 2-4 seconds
+- Nodes per Subnet: 13-28
+- Consensus: Threshold Relay
+- Chain-Key Cryptography
+            </div>
+        </div>
+        
+        <div class=\"card\">
+            <h4>Canister Smart Contracts</h4>
+            <div class=\"technical-box\">
+Features:
+- WebAssembly Runtime
+- Orthogonal Persistence
+- HTTP Outcalls
+- Inter-Canister Calls
+- Autonomous Updates
+            </div>
+        </div>
+    </div>
+
+    <h2>2. Tokenomics Deep Dive</h2>
     
-    <h3>4.1 Subnet Configuration</h3>
+    <div class=\"info-box\">
+        ICP implements a dual-purpose token model serving both as a utility token for computation and a governance token through the neuron staking mechanism.
+    </div>
+
+    <div id=\"tokenomics-flow\"></div>
+
+    <h3>2.1 Token Utility</h3>
     
     <div class=\"technical-box\">
-Subnet Parameters:
+Token Mechanisms:
 
-struct SubnetConfig {
-    // Consensus
-    block_rate: Duration,          // 1 second
-    finality_threshold: u64,       // 2 blocks
-    max_block_size: usize,         // 2MB
+1. Cycles Conversion
+   - ICP → Cycles for computation
+   - Dynamic conversion rate
+   - SDR-pegged pricing model
+
+2. Governance Staking
+   - Neuron creation
+   - Voting power calculation
+   - Reward distribution
+   - Dissolve delay mechanics
+    </div>
+
+    <h3>2.2 Neuron Mathematics</h3>
     
-    // Resources
-    max_instructions_per_round: u64,
-    max_memory_per_canister: u64,  // 4GB
-    max_canisters: u32,           // 1000
+    <div class=\"technical-box\">
+Neuron Formulas:
+
+1. Voting Power = Stake × (1 + DissolveDelay/360) × AgingMultiplier
+   where AgingMultiplier = min(1.25, 1 + age/4years)
+
+2. Rewards = BaseReward × Stake × DissolveMultiplier × VotingMultiplier
+   where DissolveMultiplier = 1 + (DissolveDelay/MaxDelay)
+   and VotingMultiplier = VotingActivity/TotalProposals
+    </div>
+
+    <h2>3. Tax Implications & Reporting</h2>
+
+    <h3>3.1 ICP Token Events</h3>
     
-    // Network
-    ingress_bytes_per_block: usize,
-    xnet_bytes_per_block: usize,
+    <div class=\"tax-box\">
+        <h4>Taxable Events:</h4>
+        <ul>
+            <li>Token Sale Participation (Cost Basis)</li>
+            <li>Converting ICP to Cycles (Disposition)</li>
+            <li>Trading ICP on Exchanges</li>
+            <li>Receiving Staking Rewards</li>
+            <li>Neuron Maturity Redemption</li>
+        </ul>
+    </div>
+
+    <div class=\"grid\">
+        <div class=\"card\">
+            <h4>Cost Basis Calculation</h4>
+            <div class=\"technical-box\">
+Methods:
+1. FIFO (First In, First Out)
+2. LIFO (Last In, First Out)
+3. Specific Identification
+
+Example:
+Purchase 1: 100 ICP @ $50
+Purchase 2: 200 ICP @ $40
+Sale: 150 ICP @ $60
+
+FIFO Cost Basis:
+(100 × $50) + (50 × $40) = $7,000
+            </div>
+        </div>
+        
+        <div class=\"card\">
+            <h4>Staking Rewards</h4>
+            <div class=\"technical-box\">
+Tax Treatment:
+1. Income Recognition
+   - Recognized when rewards distributed
+   - Valued at fair market price
+   - Reported as ordinary income
+
+2. Cost Basis Tracking
+   - New cost basis = FMV at distribution
+   - Holding period starts at distribution
+            </div>
+        </div>
+    </div>
+
+    <h3>3.2 Record Keeping Requirements</h3>
     
-    // Nodes
-    min_nodes: u32,               // 13
-    max_nodes: u32,               // 28
-    node_removal_timeout: Duration // 24 hours
-}</div>
+    <div class=\"tax-box\">
+        <h4>Essential Records:</h4>
+        <table>
+            <tr>
+                <th>Transaction Type</th>
+                <th>Required Information</th>
+                <th>Documentation</th>
+            </tr>
+            <tr>
+                <td>Purchases</td>
+                <td>Date, Amount, Price, Fees</td>
+                <td>Exchange statements, Bank transfers</td>
+            </tr>
+            <tr>
+                <td>Sales</td>
+                <td>Date, Amount, Price, Fees</td>
+                <td>Exchange statements, Blockchain records</td>
+            </tr>
+            <tr>
+                <td>Staking Rewards</td>
+                <td>Distribution dates, Amounts, FMV</td>
+                <td>Network records, Price data</td>
+            </tr>
+            <tr>
+                <td>Cycle Conversions</td>
+                <td>Conversion rate, Amount, Date</td>
+                <td>Canister records, SDR rates</td>
+            </tr>
+        </table>
+    </div>
+
+    <h2>4. Technical Implementation</h2>
+
+    <div id=\"implementation-flow\"></div>
+
+    <h3>4.1 Network Protocol</h3>
+    
+    <div class=\"technical-box\">
+Protocol Stack:
+
+1. Application Layer
+   - HTTP/HTTPS Gateway
+   - Asset Certification
+   - Query/Update Segregation
+
+2. Consensus Layer
+   - Block Production
+   - Notarization
+   - State Certification
+
+3. Network Layer
+   - P2P Communication
+   - Flow Control
+   - Peer Discovery
+
+4. Transport Layer
+   - UDP/TCP
+   - Connection Management
+   - Reliability
+    </div>
+
+    <h3>4.2 Smart Contract Development</h3>
+    
+    <div class=\"technical-box\">
+Canister Development:
+
+1. Languages
+   - Motoko (Native)
+   - Rust
+   - JavaScript/TypeScript
+   - C/C++
+
+2. Development Stack
+   - dfx CLI
+   - Candid Interface
+   - Vessel Package Manager
+   - Unit Testing Framework
+
+3. Deployment
+   - Network Deployment
+   - Upgrade Preservation
+   - State Management
+    </div>
+
+    <div class=\"card\">
+        <h4>Example Motoko Code</h4>
+        <div class=\"technical-box\">
+actor {
+    // State
+    private stable var count : Nat = 0;
+    
+    // Update call
+    public func increment() : async Nat {
+        count += 1;
+        return count;
+    };
+    
+    // Query call
+    public query func get() : async Nat {
+        return count;
+    };
+    
+    // Upgrade hook
+    system func preupgrade() {
+        // Handle upgrade
+    };
+};
+        </div>
+    </div>
   ";
 
   public query func getSpecification() : async Text {

@@ -3,84 +3,72 @@ import { backend } from 'declarations/backend';
 document.addEventListener('DOMContentLoaded', async () => {
     try {
         const content = await backend.getSpecification();
-        document.getElementById('container').innerHTML = content;
+        document.getElementById('content').innerHTML = content;
 
         // Initialize Mermaid diagrams
         mermaid.initialize({ startOnLoad: true });
-
-        const blockProduction = `
+        
+        const architectureDiagram = `
+        graph TD
+            A[Internet Computer] --> B[Subnet Blockchains]
+            A --> C[Protocol Labs]
+            A --> D[Network Nervous System]
+            
+            B --> E[Nodes]
+            B --> F[Canisters]
+            
+            C --> G[Chain Key Crypto]
+            C --> H[WebAssembly VM]
+            
+            D --> I[Governance]
+            D --> J[Economics]
+            
+            style A fill:#29abe2
+            style B fill:#522785
+            style C fill:#29abe2
+            style D fill:#522785
+        `;
+        
+        const tokenomicsFlow = `
+        graph LR
+            A[ICP Token] --> B[Cycles]
+            A --> C[Neurons]
+            
+            B --> D[Computation]
+            B --> E[Storage]
+            B --> F[Memory]
+            
+            C --> G[Governance]
+            C --> H[Staking Rewards]
+            C --> I[Voting Power]
+            
+            style A fill:#29abe2
+            style B fill:#522785
+            style C fill:#29abe2
+        `;
+        
+        const implementationFlow = `
         sequenceDiagram
-            participant RP as Random Beacon
-            participant P as Proposer
-            participant V as Validators
-            participant M as Memory Pool
+            participant User
+            participant Gateway
+            participant Canister
+            participant Consensus
             
-            RP->>P: Select Round Proposer
-            P->>M: Fetch Pending Txs
-            P->>P: Build Block
-            P->>V: Broadcast Block
-            
-            par Validation
-                V->>V: Verify Syntactic
-                V->>V: Execute Txs
-                V->>V: Verify State
-            end
-            
-            V->>V: Generate Signature Share
-            V->>P: Send Signature
-            P->>P: Aggregate Signatures
-            P->>V: Broadcast Final Block
-        `;
-        
-        const memoryModel = `
-        graph TD
-            A[Wasm Module] --> B[Memory Pages]
-            B --> C[Heap Memory]
-            B --> D[Stable Memory]
-            
-            C --> E[Volatile State]
-            D --> F[Persistent State]
-            
-            E --> G[Runtime Context]
-            F --> H[Upgrades]
-        `;
-        
-        const networkTopology = `
-        graph TD
-            A[Client] --> B[Boundary Nodes]
-            B --> C[Subnet A]
-            B --> D[Subnet B]
-            
-            subgraph "Subnet A"
-                C --> E[Node 1]
-                C --> F[Node 2]
-                C --> G[Node N]
-            end
-            
-            subgraph "Subnet B"
-                D --> H[Node 1]
-                D --> I[Node 2]
-                D --> J[Node N]
-            end
-            
-            E --> K[Canisters]
-            F --> K
-            G --> K
-            
-            H --> L[Canisters]
-            I --> L
-            J --> L
-            
-            K <--> L[XNet Messages]
+            User->>Gateway: HTTP Request
+            Gateway->>Canister: Query/Update
+            Canister->>Consensus: State Update
+            Consensus->>Canister: Confirmation
+            Canister->>Gateway: Response
+            Gateway->>User: HTTP Response
         `;
 
-        document.getElementById('block-production').innerHTML = `<div class="mermaid">${blockProduction}</div>`;
-        document.getElementById('memory-model').innerHTML = `<div class="mermaid">${memoryModel}</div>`;
-        document.getElementById('network-topology').innerHTML = `<div class="mermaid">${networkTopology}</div>`;
+        document.getElementById('architecture-diagram').innerHTML = `<div class="mermaid">${architectureDiagram}</div>`;
+        document.getElementById('tokenomics-flow').innerHTML = `<div class="mermaid">${tokenomicsFlow}</div>`;
+        document.getElementById('implementation-flow').innerHTML = `<div class="mermaid">${implementationFlow}</div>`;
 
         mermaid.init(undefined, document.querySelectorAll(".mermaid"));
     } catch (error) {
         console.error("Error fetching specification:", error);
-        document.getElementById('container').innerHTML = "<p>Error loading content. Please try again later.</p>";
+        document.getElementById('content').innerHTML = "<p>Error loading content. Please try again later.</p>";
     }
 });
