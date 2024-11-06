@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('content').innerHTML = content;
 
         // Initialize Mermaid diagrams
-        mermaid.initialize({ startOnLoad: true });
+        mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
         
         const architectureDiagram = `
         graph TD
@@ -43,10 +43,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             J --> W[ICP Token]
             J --> X[Cycles]
             
-            style A fill:#29abe2
-            style B fill:#522785
-            style C fill:#29abe2
-            style D fill:#522785
+            style A fill:#522785,color:#fff
+            style B fill:#29abe2,color:#fff
+            style C fill:#522785,color:#fff
+            style D fill:#29abe2,color:#fff
         `;
         
         const tokenomicsFlow = `
@@ -75,9 +75,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             I --> Q[Proposal Influence]
             I --> R[Followees]
             
-            style A fill:#29abe2
-            style B fill:#522785
-            style C fill:#29abe2
+            style A fill:#522785,color:#fff
+            style B fill:#29abe2,color:#fff
+            style C fill:#522785,color:#fff
         `;
         
         const implementationFlow = `
@@ -129,9 +129,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             L --> O[Schedule D]
             M --> P[Form 1040]
             
-            style A fill:#29abe2
-            style B fill:#522785
-            style C fill:#29abe2
+            style A fill:#522785,color:#fff
+            style B fill:#29abe2,color:#fff
+            style C fill:#522785,color:#fff
         `;
 
         document.getElementById('architecture-diagram').innerHTML = `<div class="mermaid">${architectureDiagram}</div>`;

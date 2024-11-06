@@ -1,56 +1,55 @@
 :root {
-    --primary: #29abe2;
-    --secondary: #522785;
-    --dark: #1a1a1a;
-    --light: #f8fafc;
-    --border: #e5e7eb;
+    --primary: #522785;
+    --secondary: #29abe2;
+    --text: #333333;
+    --background: #ffffff;
+    --light-gray: #f4f4f4;
+    --border: #e0e0e0;
 }
 
 body {
-    font-family: system-ui, -apple-system, sans-serif;
-    line-height: 1.7;
-    color: var(--dark);
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--text);
     margin: 0;
     padding: 0;
-    background-color: var(--light);
+    background-color: var(--background);
 }
 
-.container {
-    max-width: 800px;
+.content {
+    max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
 }
 
 .hero {
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    background-color: var(--primary);
     color: white;
     padding: 40px 20px;
     text-align: center;
+    margin-bottom: 40px;
 }
 
 h1 { font-size: 2.5em; margin-bottom: 0.5em; }
-h2 { font-size: 2em; color: var(--secondary); margin-top: 2em; border-bottom: 2px solid var(--secondary); }
-h3 { font-size: 1.5em; color: var(--primary); }
+h2 { font-size: 2em; color: var(--primary); margin-top: 1.5em; border-bottom: 2px solid var(--primary); padding-bottom: 0.3em; }
+h3 { font-size: 1.5em; color: var(--secondary); }
+h4 { font-size: 1.2em; color: var(--primary); }
 
 .section {
-    background-color: white;
-    margin: 20px 0;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 40px;
 }
 
 .info-box, .tax-box, .technical-box {
-    background: var(--light);
-    border-left: 4px solid var(--primary);
+    background-color: var(--light-gray);
+    border-left: 4px solid var(--secondary);
     padding: 20px;
     margin: 20px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .technical-box {
-    background: var(--dark);
-    color: white;
-    font-family: monospace;
+    background-color: #f8f8f8;
+    font-family: 'Courier New', monospace;
     overflow-x: auto;
 }
 
@@ -67,9 +66,35 @@ th, td {
 }
 
 th {
-    background: var(--light);
+    background-color: var(--light-gray);
+    font-weight: bold;
 }
 
 .mermaid {
     margin: 20px 0;
+    background-color: white;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+}
+
+ul, ol {
+    padding-left: 20px;
+}
+
+code {
+    background-color: #f0f0f0;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+}
+
+@media (max-width: 768px) {
+    .content {
+        padding: 10px;
+    }
+    
+    table {
+        font-size: 0.9em;
+    }
 }
